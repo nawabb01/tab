@@ -1,0 +1,25 @@
+CREATE TABLE students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  roll_number VARCHAR(10) UNIQUE NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  father_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  phone_number VARCHAR(15) NOT NULL,
+  course VARCHAR(50) NOT NULL,
+  start_date DATE NOT NULL,
+  issue_date DATE,
+  status ENUM('active', 'completed', 'dropped') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE applications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
+  course VARCHAR(50) NOT NULL,
+  status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
