@@ -21,9 +21,14 @@ export function CertificateVerification() {
     setError("")
     setStudent(null)
 
+    console.log("Submitting roll number:", rollNumber)
+
     try {
-      const response = await fetch(`/api/verify?rollNumber=${rollNumber.trim()}`)
+      const response = await fetch(`/api/verify?rollNumber=${encodeURIComponent(rollNumber.trim())}`)
+      console.log("Response status:", response.status)
+
       const data = await response.json()
+      console.log("Response data:", data)
 
       if (!response.ok) {
         setError(data.error || "Failed to verify certificate")
@@ -33,6 +38,7 @@ export function CertificateVerification() {
         setError("")
       }
     } catch (err) {
+      console.error("Error:", err)
       setError("Failed to verify certificate. Please try again.")
       setStudent(null)
     } finally {
@@ -42,13 +48,11 @@ export function CertificateVerification() {
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-      {" "}
-      {/* Increased max-width */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-4">
           <Input
             type="text"
-            placeholder="Enter Your Roll No "
+            placeholder="Enter Your Roll No (e.g., GNI202401)"
             value={rollNumber}
             onChange={(e) => setRollNumber(e.target.value)}
             className="flex-1"
@@ -59,12 +63,14 @@ export function CertificateVerification() {
           </Button>
         </div>
       </form>
+
       {error && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-600">
           <AlertCircle className="h-5 w-5" />
           <p>{error}</p>
         </div>
       )}
+
       {student && (
         <Card className="mt-6">
           <CardHeader className="flex flex-row items-center gap-2 pb-2">
@@ -77,7 +83,7 @@ export function CertificateVerification() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative w-48 h-48 rounded-lg overflow-hidden border-2 border-gray-200">
                   <Image
-                    src={student.photoUrl || "/placeholder.svg"}
+                    src={student.photoUrl || "/placeholder.svg?height=200&width=200"}
                     alt={`Photo of ${student.name}`}
                     fill
                     className="object-cover"
@@ -90,8 +96,6 @@ export function CertificateVerification() {
               {/* Student Details */}
               <div className="md:col-span-2">
                 <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
-                  {" "}
-                  {/* Increased gap */}
                   <div className="space-y-1">
                     <dt className="text-sm font-medium text-gray-500">Roll Number</dt>
                     <dd className="text-base">{student.rollNumber}</dd>
@@ -101,10 +105,8 @@ export function CertificateVerification() {
                     <dd className="text-base">{student.fatherName}</dd>
                   </div>
                   <div className="space-y-1 md:col-span-2">
-                    {" "}
-                    {/* Full width for email */}
                     <dt className="text-sm font-medium text-gray-500">Email</dt>
-                    <dd className="text-base break-all">{student.email}</dd> {/* Added break-all */}
+                    <dd className="text-base break-all">{student.email}</dd>
                   </div>
                   <div className="space-y-1">
                     <dt className="text-sm font-medium text-gray-500">Phone Number</dt>

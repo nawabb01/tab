@@ -1,6 +1,6 @@
 import type { Student, Application } from "@/types/student"
 
-// This is a mock database. In a real application, you'd use a proper database.
+// Mock database with all students
 let students: Student[] = [
   {
     rollNumber: "GNI202401",
@@ -59,7 +59,6 @@ let students: Student[] = [
     photoUrl:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ramandeep.jpg-7EGZZHUkW3GgJ5w0jOHQHA2mwV2TX6.jpeg",
   },
-  // New students added
   {
     rollNumber: "GNI202406",
     name: "JOBANPREET KAUR",
@@ -69,7 +68,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-06-05",
     issueDate: "2025-06-10",
-    photoUrl: "/placeholder.svg?height=200&width=200", // Placeholder until individual photo is provided
+    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/joban.jpg-PKpvGy5IXSk1hSzwLA37QdA9qzJ9wF.jpeg",
   },
   {
     rollNumber: "GNI202407",
@@ -80,7 +79,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-10",
     issueDate: "2025-07-15",
-    photoUrl: "/placeholder.svg?height=200&width=200", // Placeholder until individual photo is provided
+    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sharn.jpg-iRzGTXW3zOjWQLViFvCMU5ahjsLlyJ.jpeg",
   },
   {
     rollNumber: "GNI202408",
@@ -91,7 +90,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-15",
     issueDate: "2025-07-20",
-    photoUrl: "/placeholder.svg?height=200&width=200", // Placeholder until individual photo is provided
+    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/mandeep.jpg-C65Gd4wpx9FtCw9ct99sOpvTktb9Oz.jpeg",
   },
   {
     rollNumber: "GNI202409",
@@ -102,7 +101,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-17",
     issueDate: "2025-07-20",
-    photoUrl: "/placeholder.svg?height=200&width=200", // Placeholder until individual photo is provided
+    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kawal.jpg-XRRdc4CG5dNdNSAg6jpaWnZOKjmVcT.jpeg",
   },
 ]
 
@@ -110,7 +109,12 @@ const applications: Application[] = []
 
 export const db = {
   getStudents: () => students,
-  getStudent: (rollNumber: string) => students.find((s) => s.rollNumber.toLowerCase() === rollNumber.toLowerCase()),
+  getStudent: (rollNumber: string) => {
+    console.log("Searching for roll number:", rollNumber)
+    const student = students.find((s) => s.rollNumber.toLowerCase() === rollNumber.toLowerCase())
+    console.log("Found student:", student)
+    return student
+  },
   addStudent: (student: Student) => {
     students.push(student)
     return student

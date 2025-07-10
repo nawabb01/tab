@@ -5,11 +5,14 @@ export async function GET(request: NextRequest) {
   try {
     const rollNumber = request.nextUrl.searchParams.get("rollNumber")
 
+    console.log("API: Received roll number:", rollNumber)
+
     if (!rollNumber) {
       return NextResponse.json({ error: "Roll number is required" }, { status: 400 })
     }
 
-    const student = db.getStudent(rollNumber)
+    const student = db.getStudent(rollNumber.trim())
+    console.log("API: Found student:", student)
 
     if (!student) {
       return NextResponse.json({ error: "No certificate found for this roll number" }, { status: 404 })

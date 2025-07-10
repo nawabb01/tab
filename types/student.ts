@@ -7,7 +7,7 @@ export interface Student {
   course: string
   startDate: string
   issueDate: string
-  photoUrl: string // Added photo URL field
+  photoUrl?: string
 }
 
 export interface Application {
