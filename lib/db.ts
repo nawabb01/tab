@@ -11,7 +11,7 @@ let students: Student[] = [
     course: "Basic Computer Course",
     startDate: "2024-05-01",
     issueDate: "2024-12-10",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pawan.jpg-U5ScI3MWBUajlofqPvtI2yImm14jD9.jpeg",
+    photoUrl: "/images/pawan.jpeg",
   },
   {
     rollNumber: "GNI202402",
@@ -22,7 +22,7 @@ let students: Student[] = [
     course: "Basic Computer Course",
     startDate: "2024-06-01",
     issueDate: "2024-12-10",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Parmod.jpg-JcK0Hn8U8V7wif2t0HSOgNmT1IFwLy.jpeg",
+    photoUrl: "/images/parmod.jpeg",
   },
   {
     rollNumber: "GNI202403",
@@ -33,7 +33,7 @@ let students: Student[] = [
     course: "Basic Computer Course",
     startDate: "2024-06-01",
     issueDate: "2024-10-10",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gagan.jpg-7yUWIDuEPNchJKwDS23Af7HNO7VPWg.jpeg",
+    photoUrl: "/images/gagan.jpeg",
   },
   {
     rollNumber: "GNI202404",
@@ -44,8 +44,7 @@ let students: Student[] = [
     course: "Basic Computer Course",
     startDate: "2024-05-01",
     issueDate: "2024-12-10",
-    photoUrl:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sukhdeep.jpg-5leEGmXJ0efvkH2rq6iwlKCnsppamH.jpeg",
+    photoUrl: "/images/sukhdeep.jpeg",
   },
   {
     rollNumber: "GNI202405",
@@ -56,8 +55,7 @@ let students: Student[] = [
     course: "Advanced Diploma in Computer Application (ADCA)",
     startDate: "2024-05-01",
     issueDate: "2025-05-01",
-    photoUrl:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ramandeep.jpg-7EGZZHUkW3GgJ5w0jOHQHA2mwV2TX6.jpeg",
+    photoUrl: "/images/ramandeep.jpeg",
   },
   {
     rollNumber: "GNI202406",
@@ -68,7 +66,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-06-05",
     issueDate: "2025-06-10",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/joban.jpg-PKpvGy5IXSk1hSzwLA37QdA9qzJ9wF.jpeg",
+    photoUrl: "/images/joban.jpeg",
   },
   {
     rollNumber: "GNI202407",
@@ -79,7 +77,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-10",
     issueDate: "2025-07-15",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sharn.jpg-iRzGTXW3zOjWQLViFvCMU5ahjsLlyJ.jpeg",
+    photoUrl: "/images/sharn.jpeg",
   },
   {
     rollNumber: "GNI202408",
@@ -90,7 +88,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-15",
     issueDate: "2025-07-20",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/mandeep.jpg-C65Gd4wpx9FtCw9ct99sOpvTktb9Oz.jpeg",
+    photoUrl: "/images/mandeep.jpeg",
   },
   {
     rollNumber: "GNI202409",
@@ -101,7 +99,29 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-17",
     issueDate: "2025-07-20",
-    photoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kawal.jpg-XRRdc4CG5dNdNSAg6jpaWnZOKjmVcT.jpeg",
+    photoUrl: "/images/kawal.jpeg",
+  },
+  {
+    rollNumber: "GNI2024010",
+    name: "SUMANPREET KAUR",
+    fatherName: "BUDH SINGH",
+    email: "Sumanpreetsugga@gmail.com",
+    phoneNumber: "6284717419",
+    course: "ADCA (Advanced Diploma Computer Application)",
+    startDate: "2024-08-01",
+    issueDate: "2025-08-10",
+    photoUrl: "/sumanpreet-kaur-photo.jpg",
+  },
+  {
+    rollNumber: "GNI2024011",
+    name: "HARMANPREET KAUR",
+    fatherName: "DAVINDER SINGH",
+    email: "harmanpreetkaursugga@gmail.com",
+    phoneNumber: "6280107507",
+    course: "ADCA (Advanced Diploma Computer Application)",
+    startDate: "2024-08-01",
+    issueDate: "2025-08-10",
+    photoUrl: "/harmanpreet-kaur-photo.jpg",
   },
 ]
 
