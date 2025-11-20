@@ -130,8 +130,9 @@ const applications: Application[] = []
 export const db = {
   getStudents: () => students,
   getStudent: (rollNumber: string) => {
-    console.log("Searching for roll number:", rollNumber)
-    const student = students.find((s) => s.rollNumber.toLowerCase() === rollNumber.toLowerCase())
+    const normalizedRollNumber = rollNumber.trim().replace(/\s+/g, "").toUpperCase()
+    console.log("Searching for roll number:", normalizedRollNumber)
+    const student = students.find((s) => s.rollNumber.replace(/\s+/g, "").toUpperCase() === normalizedRollNumber)
     console.log("Found student:", student)
     return student
   },
