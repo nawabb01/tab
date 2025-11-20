@@ -110,7 +110,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/sumanpreet-kaur-photo.jpg",
+    photoUrl: "/images/sumanpreet.jpg",
   },
   {
     rollNumber: "GNI2024011",
@@ -121,7 +121,7 @@ let students: Student[] = [
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/harmanpreet-kaur-photo.jpg",
+    photoUrl: "/images/harmanpreet.jpg",
   },
 ]
 
