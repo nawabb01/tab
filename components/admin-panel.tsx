@@ -17,7 +17,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import type { Student, Application } from "@/types/student"
@@ -43,6 +42,7 @@ export function AdminPanel() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<"students" | "applications" | "website">("students")
   const [formData, setFormData] = useState({
     name: "",
     fatherName: "",
@@ -202,133 +202,158 @@ export function AdminPanel() {
   }
 
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-emerald-50 to-emerald-100 p-6">
-      <Tabs defaultValue="students" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="students">Students</TabsTrigger>
-          <TabsTrigger value="applications">Applications</TabsTrigger>
-          <TabsTrigger value="website">Website</TabsTrigger>
-        </TabsList>
+    <div className="w-full bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-lg">
+      <div className="flex gap-4 mb-6 border-b border-emerald-200">
+        <button
+          onClick={() => setActiveTab("students")}
+          className={`px-4 py-2 font-medium ${
+            activeTab === "students"
+              ? "text-emerald-600 border-b-2 border-emerald-600"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          Students
+        </button>
+        <button
+          onClick={() => setActiveTab("applications")}
+          className={`px-4 py-2 font-medium ${
+            activeTab === "applications"
+              ? "text-emerald-600 border-b-2 border-emerald-600"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          Applications
+        </button>
+        <button
+          onClick={() => setActiveTab("website")}
+          className={`px-4 py-2 font-medium ${
+            activeTab === "website"
+              ? "text-emerald-600 border-b-2 border-emerald-600"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          Website
+        </button>
+      </div>
 
-        {/* Students Tab */}
-        <TabsContent value="students">
-          <Card>
-            <CardHeader>
-              <CardTitle>Student Management</CardTitle>
-              <CardDescription>Manage all enrolled students</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={handleOpenDialog} className="mb-4 bg-emerald-600 hover:bg-emerald-700">
-                Add New Student
-              </Button>
+      {/* Students Tab */}
+      {activeTab === "students" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Student Management</CardTitle>
+            <CardDescription>Manage all enrolled students</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={handleOpenDialog} className="mb-4 bg-emerald-600 hover:bg-emerald-700">
+              Add New Student
+            </Button>
 
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Roll Number</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Course</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {students.map((student) => (
+                    <TableRow key={student.id}>
+                      <TableCell className="font-medium">{student.rollNumber}</TableCell>
+                      <TableCell>{student.name}</TableCell>
+                      <TableCell>{student.email}</TableCell>
+                      <TableCell>{student.phoneNumber}</TableCell>
+                      <TableCell>{student.course}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(student)}
+                            className="text-blue-600"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedStudent(student)
+                              setIsDeleteDialogOpen(true)
+                            }}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Applications Tab */}
+      {activeTab === "applications" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Course Applications</CardTitle>
+            <CardDescription>View all course applications</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {applications.length === 0 ? (
+              <p className="text-gray-500">No applications yet</p>
+            ) : (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Roll Number</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
                       <TableHead>Course</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {students.map((student) => (
-                      <TableRow key={student.id}>
-                        <TableCell className="font-medium">{student.rollNumber}</TableCell>
-                        <TableCell>{student.name}</TableCell>
-                        <TableCell>{student.email}</TableCell>
-                        <TableCell>{student.phoneNumber}</TableCell>
-                        <TableCell>{student.course}</TableCell>
+                    {applications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell className="font-medium">{app.name}</TableCell>
+                        <TableCell>{app.email}</TableCell>
+                        <TableCell>{app.course}</TableCell>
+                        <TableCell>{app.phoneNumber}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEdit(student)}
-                              className="text-blue-600"
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedStudent(student)
-                                setIsDeleteDialogOpen(true)
-                              }}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
+                          <span className="px-2 py-1 bg-emerald-100 text-emerald-800 rounded text-sm">Pending</span>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
-        {/* Applications Tab */}
-        <TabsContent value="applications">
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Applications</CardTitle>
-              <CardDescription>View all course applications</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {applications.length === 0 ? (
-                <p className="text-gray-500">No applications yet</p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {applications.map((app) => (
-                        <TableRow key={app.id}>
-                          <TableCell className="font-medium">{app.name}</TableCell>
-                          <TableCell>{app.email}</TableCell>
-                          <TableCell>{app.course}</TableCell>
-                          <TableCell>{app.phoneNumber}</TableCell>
-                          <TableCell>
-                            <span className="px-2 py-1 bg-emerald-100 text-emerald-800 rounded text-sm">Pending</span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Website Tab */}
-        <TabsContent value="website">
-          <Card>
-            <CardHeader>
-              <CardTitle>Website Content</CardTitle>
-              <CardDescription>Manage website content and settings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Website content management coming soon...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Website Tab */}
+      {activeTab === "website" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Website Content</CardTitle>
+            <CardDescription>Manage website content and settings</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600">Website content management coming soon...</p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Add/Edit Student Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
