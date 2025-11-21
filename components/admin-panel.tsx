@@ -225,174 +225,180 @@ export function AdminPanel() {
               }
             }}
           >
-            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{isEditing ? "Edit Student" : "Add New Student"}</DialogTitle>
-                <DialogDescription>
-                  {isEditing ? "Edit student details" : "Enter student details to add them to the system"}
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormItem>
-                    <FormLabel>Student Photo</FormLabel>
-                    <div className="flex gap-4">
-                      {photoPreview && (
-                        <div className="relative">
-                          <img
-                            src={photoPreview || "/placeholder.svg"}
-                            alt="Preview"
-                            className="w-24 h-32 object-cover rounded border"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <FormControl>
-                          <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed rounded cursor-pointer hover:bg-gray-50">
-                            <Upload className="h-4 w-4" />
-                            <span>Upload Photo</span>
-                            <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-                          </label>
-                        </FormControl>
-                        <p className="text-xs text-gray-500 mt-2">JPG, PNG (Max 5MB)</p>
-                      </div>
-                    </div>
-                  </FormItem>
-
-                  <FormField
-                    control={form.control}
-                    name="rollNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Roll Number</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., GNI202401" {...field} disabled={isEditing} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter full name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="fatherName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Father's Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter father's name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="Enter email" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <Input type="tel" placeholder="Enter phone number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="course"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Course</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <DialogContent className="sm:max-w-[600px] max-h-[95vh] overflow-hidden flex flex-col">
+              <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+                <DialogHeader className="sticky top-0 bg-white pb-4 border-b">
+                  <DialogTitle>{isEditing ? "Edit Student" : "Add New Student"}</DialogTitle>
+                  <DialogDescription>
+                    {isEditing ? "Edit student details" : "Enter student details to add them to the system"}
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4">
+                    <FormItem>
+                      <FormLabel>Student Photo</FormLabel>
+                      <div className="flex gap-4">
+                        {photoPreview && (
+                          <div className="relative">
+                            <img
+                              src={photoPreview || "/placeholder.svg"}
+                              alt="Preview"
+                              className="w-24 h-32 object-cover rounded border"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a course" />
-                            </SelectTrigger>
+                            <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed rounded cursor-pointer hover:bg-gray-50">
+                              <Upload className="h-4 w-4" />
+                              <span>Upload Photo</span>
+                              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                            </label>
                           </FormControl>
-                          <SelectContent>
-                            {courseOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <p className="text-xs text-gray-500 mt-2">JPG, PNG (Max 5MB)</p>
+                        </div>
+                      </div>
+                    </FormItem>
 
-                  <FormField
-                    control={form.control}
-                    name="startDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Start Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="rollNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Roll Number</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., GNI202401" {...field} disabled={isEditing} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="issueDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Issue Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading
-                      ? isEditing
-                        ? "Updating..."
-                        : "Adding..."
-                      : isEditing
-                        ? "Update Student"
-                        : "Add Student"}
-                  </Button>
-                </form>
-              </Form>
+                    <FormField
+                      control={form.control}
+                      name="fatherName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Father's Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter father's name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="Enter email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="Enter phone number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="course"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Course</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a course" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {courseOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="startDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Start Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="issueDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Issue Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2"
+                      disabled={isLoading}
+                    >
+                      {isLoading
+                        ? isEditing
+                          ? "Updating..."
+                          : "Adding..."
+                        : isEditing
+                          ? "✓ Update Student"
+                          : "✓ Add Student"}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
             </DialogContent>
           </Dialog>
 
