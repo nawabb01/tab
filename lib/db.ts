@@ -1,7 +1,7 @@
-import type { Student, Application } from "@/types/student"
+import type { Student } from "@/types/student"
 
-// Mock database with all students
-let students: Student[] = [
+// Default students data
+const DEFAULT_STUDENTS: Student[] = [
   {
     rollNumber: "GNI202401",
     name: "PAWAN DEEP KAUR",
@@ -125,7 +125,35 @@ let students: Student[] = [
   },
 ]
 
-const applications: Application[] = []
+let students: Student[] = [...DEFAULT_STUDENTS]
+let applications: any[] = []
+
+// Initialize from localStorage if available
+if (typeof window !== "undefined") {
+  try {
+    const savedStudents = localStorage.getItem("gni_students")
+    const savedApplications = localStorage.getItem("gni_applications")
+    if (savedStudents) {
+      students = JSON.parse(savedStudents)
+    }
+    if (savedApplications) {
+      applications = JSON.parse(savedApplications)
+    }
+  } catch (error) {
+    console.error("Error loading from localStorage:", error)
+  }
+}
+
+function saveToLocalStorage() {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("gni_students", JSON.stringify(students))
+      localStorage.setItem("gni_applications", JSON.stringify(applications))
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+    }
+  }
+}
 
 export const db = {
   getStudents: () => students,
@@ -138,12 +166,14 @@ export const db = {
   },
   addStudent: (student: Student) => {
     students.push(student)
+    saveToLocalStorage()
     return student
   },
   updateStudent: (updatedStudent: Student) => {
     const index = students.findIndex((s) => s.rollNumber === updatedStudent.rollNumber)
     if (index !== -1) {
       students[index] = updatedStudent
+      saveToLocalStorage()
       return updatedStudent
     }
     return null
@@ -152,13 +182,15 @@ export const db = {
     const index = students.findIndex((s) => s.rollNumber === rollNumber)
     if (index !== -1) {
       students = students.filter((s) => s.rollNumber !== rollNumber)
+      saveToLocalStorage()
       return true
     }
     return false
   },
   getApplications: () => applications,
-  addApplication: (application: Application) => {
+  addApplication: (application: any) => {
     applications.push(application)
+    saveToLocalStorage()
     return application
   },
 }
