@@ -133,7 +133,7 @@ const DEFAULT_STUDENTS: Student[] = [
     fatherName: "HARJEET SINGH",
     email: "sukhjotgill39@gmail.com",
     phoneNumber: "9188472131889",
-    course: "ADCA",
+    course: "DCA",
     startDate: "2025-06-01",
     issueDate: "2025-11-25",
     photoUrl: "/images/img-20251122-wa0030.jpg",
