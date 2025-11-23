@@ -74,10 +74,10 @@ export function AdminPanel() {
     try {
       const response = await fetch("/api/students")
       const data = await response.json()
+      console.log("[v0] Fetched students from API:", data)
       setStudents(data)
     } catch (error) {
       console.error("Error fetching students:", error)
-      toast.error("Failed to load students")
     }
   }
 
@@ -103,13 +103,22 @@ export function AdminPanel() {
     setIsLoading(true)
 
     try {
+      if (!formData.rollNumber.trim()) {
+        toast.error("Roll number is required")
+        setIsLoading(false)
+        return
+      }
+
       const payload = {
         ...formData,
+        rollNumber: formData.rollNumber.trim().toUpperCase(),
         photoUrl: photoPreview || selectedStudent?.photoUrl || "",
       }
 
+      console.log("[v0] Submitting student data:", payload)
+
       const response = await fetch(
-        isEditing && selectedStudent ? `/api/students/${selectedStudent.id}` : "/api/students",
+        isEditing && selectedStudent ? `/api/students/${selectedStudent.rollNumber}` : "/api/students",
         {
           method: isEditing && selectedStudent ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
@@ -118,8 +127,13 @@ export function AdminPanel() {
       )
 
       if (response.ok) {
+        const responseData = await response.json()
+        console.log("[v0] Student saved successfully:", responseData)
         toast.success(isEditing ? "Student updated successfully" : "Student added successfully")
+
+        await new Promise((resolve) => setTimeout(resolve, 100))
         await fetchStudents()
+
         setIsDialogOpen(false)
         setIsEditing(false)
         setSelectedStudent(null)
@@ -135,10 +149,12 @@ export function AdminPanel() {
           rollNumber: "",
         })
       } else {
-        toast.error("Failed to save student")
+        const errorData = await response.json()
+        console.error("[v0] Failed to save student:", errorData)
+        toast.error(errorData.error || "Failed to save student")
       }
     } catch (error) {
-      console.error("Error saving student:", error)
+      console.error("[v0] Error saving student:", error)
       toast.error("Error saving student")
     } finally {
       setIsLoading(false)
@@ -166,7 +182,7 @@ export function AdminPanel() {
     if (!selectedStudent) return
 
     try {
-      const response = await fetch(`/api/students/${selectedStudent.id}`, {
+      const response = await fetch(`/api/students/${selectedStudent.rollNumber}`, {
         method: "DELETE",
       })
 

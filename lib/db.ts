@@ -128,7 +128,6 @@ const DEFAULT_STUDENTS: Student[] = [
 let students: Student[] = [...DEFAULT_STUDENTS]
 let applications: any[] = []
 
-// Initialize from localStorage if available
 if (typeof window !== "undefined") {
   try {
     const savedStudents = localStorage.getItem("gni_students")
@@ -157,18 +156,29 @@ function saveToLocalStorage() {
 
 export const db = {
   getStudents: () => students,
+
   getStudent: (rollNumber: string) => {
     const normalizedRollNumber = rollNumber.trim().replace(/\s+/g, "").toUpperCase()
-    console.log("Searching for roll number:", normalizedRollNumber)
-    const student = students.find((s) => s.rollNumber.replace(/\s+/g, "").toUpperCase() === normalizedRollNumber)
-    console.log("Found student:", student)
-    return student
+    return students.find((s) => s.rollNumber.replace(/\s+/g, "").toUpperCase() === normalizedRollNumber)
   },
+
   addStudent: (student: Student) => {
+    if (!student.rollNumber) {
+      const nextNumber = String(students.length + 1).padStart(6, "0")
+      student.rollNumber = `GNI${nextNumber}`
+    }
+
+    const exists = students.find((s) => s.rollNumber === student.rollNumber)
+    if (exists) {
+      console.error("Student with this roll number already exists")
+      return null
+    }
+
     students.push(student)
     saveToLocalStorage()
     return student
   },
+
   updateStudent: (updatedStudent: Student) => {
     const index = students.findIndex((s) => s.rollNumber === updatedStudent.rollNumber)
     if (index !== -1) {
@@ -178,16 +188,19 @@ export const db = {
     }
     return null
   },
+
   deleteStudent: (rollNumber: string) => {
-    const index = students.findIndex((s) => s.rollNumber === rollNumber)
-    if (index !== -1) {
-      students = students.filter((s) => s.rollNumber !== rollNumber)
+    const initialLength = students.length
+    students = students.filter((s) => s.rollNumber !== rollNumber)
+    if (students.length < initialLength) {
       saveToLocalStorage()
       return true
     }
     return false
   },
+
   getApplications: () => applications,
+
   addApplication: (application: any) => {
     applications.push(application)
     saveToLocalStorage()
