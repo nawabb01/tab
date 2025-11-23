@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Roll number is required" }, { status: 400 })
     }
 
-    const student = db.getStudent(rollNumber.trim())
+    const student = db.getStudentByRollNumber(rollNumber.trim())
     console.log("API: Found student:", student)
 
     if (!student) {
