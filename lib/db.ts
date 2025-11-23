@@ -1,5 +1,9 @@
 import type { Student } from "@/types/student"
 
+// In-memory store (survives during session)
+let studentsStore: Student[] = []
+let isInitialized = false
+
 // Default students data
 const DEFAULT_STUDENTS: Student[] = [
   {
@@ -98,7 +102,7 @@ const DEFAULT_STUDENTS: Student[] = [
     phoneNumber: "9501114131",
     course: "ADCA (Advanced Diploma Computer Application)",
     startDate: "2024-07-17",
-    issueDate: "2025-07-20",
+    issueDate: "2025-07-25",
     photoUrl: "/images/kawal.jpeg",
   },
   {
@@ -107,7 +111,7 @@ const DEFAULT_STUDENTS: Student[] = [
     fatherName: "BUDH SINGH",
     email: "Sumanpreetsugga@gmail.com",
     phoneNumber: "6284717419",
-    course: "ADCA (Advanced Diploma Computer Application)",
+    course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
     photoUrl: "/images/sumanpreet.jpg",
@@ -118,92 +122,68 @@ const DEFAULT_STUDENTS: Student[] = [
     fatherName: "DAVINDER SINGH",
     email: "harmanpreetkaursugga@gmail.com",
     phoneNumber: "6280107507",
-    course: "ADCA (Advanced Diploma Computer Application)",
+    course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
     photoUrl: "/images/harmanpreet.jpg",
   },
 ]
 
-let students: Student[] = [...DEFAULT_STUDENTS]
-let applications: any[] = []
-
-if (typeof window !== "undefined") {
-  try {
-    const savedStudents = localStorage.getItem("gni_students")
-    const savedApplications = localStorage.getItem("gni_applications")
-    if (savedStudents) {
-      students = JSON.parse(savedStudents)
-    }
-    if (savedApplications) {
-      applications = JSON.parse(savedApplications)
-    }
-  } catch (error) {
-    console.error("Error loading from localStorage:", error)
+export function initializeStudents() {
+  if (!isInitialized) {
+    studentsStore = [...DEFAULT_STUDENTS]
+    isInitialized = true
   }
+  return studentsStore
 }
 
-function saveToLocalStorage() {
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem("gni_students", JSON.stringify(students))
-      localStorage.setItem("gni_applications", JSON.stringify(applications))
-    } catch (error) {
-      console.error("Error saving to localStorage:", error)
-    }
+export function getStudents(): Student[] {
+  if (!isInitialized) {
+    initializeStudents()
   }
+  return [...studentsStore]
+}
+
+export function addStudent(student: Student): Student {
+  if (!isInitialized) {
+    initializeStudents()
+  }
+  studentsStore.push(student)
+  return student
+}
+
+export function updateStudent(rollNumber: string, updates: Partial<Student>): Student | null {
+  if (!isInitialized) {
+    initializeStudents()
+  }
+  const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
+  if (index === -1) return null
+  studentsStore[index] = { ...studentsStore[index], ...updates }
+  return studentsStore[index]
+}
+
+export function deleteStudent(rollNumber: string): boolean {
+  if (!isInitialized) {
+    initializeStudents()
+  }
+  const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
+  if (index === -1) return false
+  studentsStore.splice(index, 1)
+  return true
+}
+
+export function getStudentByRollNumber(rollNumber: string): Student | null {
+  if (!isInitialized) {
+    initializeStudents()
+  }
+  return studentsStore.find((s) => s.rollNumber.replace(/\s+/g, "") === rollNumber.replace(/\s+/g, "")) || null
 }
 
 export const db = {
-  getStudents: () => students,
-
-  getStudent: (rollNumber: string) => {
-    const normalizedRollNumber = rollNumber.trim().replace(/\s+/g, "").toUpperCase()
-    return students.find((s) => s.rollNumber.replace(/\s+/g, "").toUpperCase() === normalizedRollNumber)
-  },
-
-  addStudent: (student: Student) => {
-    if (!student.rollNumber) {
-      const nextNumber = String(students.length + 1).padStart(6, "0")
-      student.rollNumber = `GNI${nextNumber}`
-    }
-
-    const exists = students.find((s) => s.rollNumber === student.rollNumber)
-    if (exists) {
-      console.error("Student with this roll number already exists")
-      return null
-    }
-
-    students.push(student)
-    saveToLocalStorage()
-    return student
-  },
-
-  updateStudent: (updatedStudent: Student) => {
-    const index = students.findIndex((s) => s.rollNumber === updatedStudent.rollNumber)
-    if (index !== -1) {
-      students[index] = updatedStudent
-      saveToLocalStorage()
-      return updatedStudent
-    }
-    return null
-  },
-
-  deleteStudent: (rollNumber: string) => {
-    const initialLength = students.length
-    students = students.filter((s) => s.rollNumber !== rollNumber)
-    if (students.length < initialLength) {
-      saveToLocalStorage()
-      return true
-    }
-    return false
-  },
-
-  getApplications: () => applications,
-
-  addApplication: (application: any) => {
-    applications.push(application)
-    saveToLocalStorage()
-    return application
-  },
+  initializeStudents,
+  getStudents,
+  addStudent,
+  updateStudent,
+  deleteStudent,
+  getStudentByRollNumber,
 }

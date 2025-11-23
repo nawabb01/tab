@@ -98,64 +98,58 @@ export function AdminPanel() {
     }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleSubmit = async () => {
+    if (!formData.rollNumber || !formData.name) {
+      toast.error("Please fill all required fields")
+      return
+    }
 
     try {
-      if (!formData.rollNumber.trim()) {
-        toast.error("Roll number is required")
-        setIsLoading(false)
-        return
+      setIsLoading(true)
+
+      // Prepare student data WITHOUT storing base64 in photoUrl
+      const studentData: Student = {
+        rollNumber: formData.rollNumber,
+        name: formData.name,
+        fatherName: formData.fatherName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        course: formData.course,
+        startDate: formData.startDate,
+        issueDate: formData.issueDate,
+        photoUrl: photoPreview || "", // Store preview temporarily for display, but not the base64
       }
 
-      const payload = {
-        ...formData,
-        rollNumber: formData.rollNumber.trim().toUpperCase(),
-        photoUrl: photoPreview || selectedStudent?.photoUrl || "",
-      }
-
-      console.log("[v0] Submitting student data:", payload)
-
-      const response = await fetch(
-        isEditing && selectedStudent ? `/api/students/${selectedStudent.rollNumber}` : "/api/students",
-        {
-          method: isEditing && selectedStudent ? "PUT" : "POST",
+      if (isEditing && selectedStudent) {
+        const response = await fetch(`/api/students/${selectedStudent.rollNumber}`, {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      )
-
-      if (response.ok) {
-        const responseData = await response.json()
-        console.log("[v0] Student saved successfully:", responseData)
-        toast.success(isEditing ? "Student updated successfully" : "Student added successfully")
-
-        await new Promise((resolve) => setTimeout(resolve, 100))
-        await fetchStudents()
-
-        setIsDialogOpen(false)
-        setIsEditing(false)
-        setSelectedStudent(null)
-        setPhotoPreview(null)
-        setFormData({
-          name: "",
-          fatherName: "",
-          email: "",
-          phoneNumber: "",
-          course: "",
-          startDate: "",
-          issueDate: "",
-          rollNumber: "",
+          body: JSON.stringify(studentData),
         })
+
+        if (response.ok) {
+          toast.success("Student updated successfully!")
+          setIsDialogOpen(false)
+          resetForm()
+          fetchStudents()
+        }
       } else {
-        const errorData = await response.json()
-        console.error("[v0] Failed to save student:", errorData)
-        toast.error(errorData.error || "Failed to save student")
+        const response = await fetch("/api/students", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(studentData),
+        })
+
+        if (response.ok) {
+          toast.success("Student added successfully!")
+          setIsDialogOpen(false)
+          resetForm()
+          fetchStudents()
+        }
       }
     } catch (error) {
-      console.error("[v0] Error saving student:", error)
       toast.error("Error saving student")
+      console.error(error)
     } finally {
       setIsLoading(false)
     }
@@ -215,6 +209,21 @@ export function AdminPanel() {
       rollNumber: "",
     })
     setIsDialogOpen(true)
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      fatherName: "",
+      email: "",
+      phoneNumber: "",
+      course: "",
+      startDate: "",
+      issueDate: "",
+      rollNumber: "",
+    })
+    setPhotoPreview(null)
+    setSelectedStudent(null)
   }
 
   return (
