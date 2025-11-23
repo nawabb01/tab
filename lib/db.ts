@@ -114,7 +114,7 @@ const DEFAULT_STUDENTS: Student[] = [
     course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/images/sumanpreet.jpg",
+    photoUrl: "/images/1000387017.jpg",
   },
   {
     rollNumber: "GNI2024011",
@@ -125,7 +125,18 @@ const DEFAULT_STUDENTS: Student[] = [
     course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/images/harmanpreet.jpg",
+    photoUrl: "/images/1000375047.jpg",
+  },
+  {
+    rollNumber: "GNI2024013",
+    name: "ASHMEET KAUR",
+    fatherName: "HARJEET SINGH",
+    email: "sukhjotgill39@gmail.com",
+    phoneNumber: "9188472131889",
+    course: "ADCA",
+    startDate: "2025-06-01",
+    issueDate: "2025-11-25",
+    photoUrl: "/images/img-20251122-wa0030.jpg",
   },
 ]
 
