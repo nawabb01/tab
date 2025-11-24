@@ -53,10 +53,12 @@ export function AdminPanel() {
     issueDate: "",
     rollNumber: "",
   })
+  const [remainingSlots, setRemainingSlots] = useState(0)
 
   useEffect(() => {
     fetchStudents()
     fetchApplications()
+    fetchRemainingSlots()
   }, [])
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +93,16 @@ export function AdminPanel() {
     }
   }
 
+  const fetchRemainingSlots = async () => {
+    try {
+      const response = await fetch("/api/students/slots")
+      const data = await response.json()
+      setRemainingSlots(data.remaining)
+    } catch (error) {
+      console.error("Error fetching remaining slots:", error)
+    }
+  }
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -99,57 +111,52 @@ export function AdminPanel() {
   }
 
   const handleSubmit = async () => {
-    if (!formData.rollNumber || !formData.name) {
-      toast.error("Please fill all required fields")
+    if (!formData.name || !formData.rollNumber || !formData.course) {
+      toast.error("Please fill in all required fields")
+      return
+    }
+
+    if (remainingSlots <= 0) {
+      toast.error("Maximum 50 students limit reached!")
       return
     }
 
     try {
       setIsLoading(true)
+      const response = await fetch("/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          photoUrl: photoPreview || "/placeholder.svg",
+        }),
+      })
 
-      // Prepare student data WITHOUT storing base64 in photoUrl
-      const studentData: Student = {
-        rollNumber: formData.rollNumber,
-        name: formData.name,
-        fatherName: formData.fatherName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        course: formData.course,
-        startDate: formData.startDate,
-        issueDate: formData.issueDate,
-        photoUrl: photoPreview || "", // Store preview temporarily for display, but not the base64
+      if (!response.ok) {
+        const error = await response.json()
+        toast.error(error.message || "Failed to add student")
+        return
       }
 
-      if (isEditing && selectedStudent) {
-        const response = await fetch(`/api/students/${selectedStudent.rollNumber}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(studentData),
-        })
-
-        if (response.ok) {
-          toast.success("Student updated successfully!")
-          setIsDialogOpen(false)
-          resetForm()
-          fetchStudents()
-        }
-      } else {
-        const response = await fetch("/api/students", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(studentData),
-        })
-
-        if (response.ok) {
-          toast.success("Student added successfully!")
-          setIsDialogOpen(false)
-          resetForm()
-          fetchStudents()
-        }
-      }
+      toast.success(isEditing ? "Student updated successfully!" : "Student added successfully!")
+      setFormData({
+        name: "",
+        fatherName: "",
+        email: "",
+        phoneNumber: "",
+        course: "",
+        startDate: "",
+        issueDate: "",
+        rollNumber: "",
+      })
+      setPhotoPreview(null)
+      setIsDialogOpen(false)
+      setIsEditing(false)
+      await fetchStudents()
+      await fetchRemainingSlots()
     } catch (error) {
-      toast.error("Error saving student")
-      console.error(error)
+      console.error("Error saving student:", error)
+      toast.error("Failed to save student")
     } finally {
       setIsLoading(false)
     }

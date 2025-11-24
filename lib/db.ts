@@ -1,5 +1,8 @@
 import type { Student } from "@/types/student"
 
+const MAX_STUDENTS = 50
+const STORAGE_KEY = "gni_students"
+
 // In-memory store (survives during session)
 let studentsStore: Student[] = []
 let isInitialized = false
@@ -140,9 +143,36 @@ const DEFAULT_STUDENTS: Student[] = [
   },
 ]
 
+function loadFromStorage(): Student[] {
+  if (typeof window === "undefined") return []
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      return JSON.parse(stored)
+    }
+  } catch (error) {
+    console.error("Error loading from localStorage:", error)
+  }
+  return []
+}
+
+function saveToStorage(students: Student[]) {
+  if (typeof window === "undefined") return
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(students))
+  } catch (error) {
+    console.error("Error saving to localStorage:", error)
+  }
+}
+
 export function initializeStudents() {
   if (!isInitialized) {
-    studentsStore = [...DEFAULT_STUDENTS]
+    const stored = loadFromStorage()
+    if (stored.length > 0) {
+      studentsStore = stored
+    } else {
+      studentsStore = [...DEFAULT_STUDENTS]
+    }
     isInitialized = true
   }
   return studentsStore
@@ -155,11 +185,16 @@ export function getStudents(): Student[] {
   return [...studentsStore]
 }
 
-export function addStudent(student: Student): Student {
+export function addStudent(student: Student): Student | null {
   if (!isInitialized) {
     initializeStudents()
   }
+  if (studentsStore.length >= MAX_STUDENTS) {
+    console.warn(`Cannot add student. Maximum limit of ${MAX_STUDENTS} students reached.`)
+    return null
+  }
   studentsStore.push(student)
+  saveToStorage(studentsStore)
   return student
 }
 
@@ -170,6 +205,7 @@ export function updateStudent(rollNumber: string, updates: Partial<Student>): St
   const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
   if (index === -1) return null
   studentsStore[index] = { ...studentsStore[index], ...updates }
+  saveToStorage(studentsStore)
   return studentsStore[index]
 }
 
@@ -180,6 +216,7 @@ export function deleteStudent(rollNumber: string): boolean {
   const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
   if (index === -1) return false
   studentsStore.splice(index, 1)
+  saveToStorage(studentsStore)
   return true
 }
 
@@ -190,6 +227,13 @@ export function getStudentByRollNumber(rollNumber: string): Student | null {
   return studentsStore.find((s) => s.rollNumber.replace(/\s+/g, "") === rollNumber.replace(/\s+/g, "")) || null
 }
 
+export function getRemainingSlots(): number {
+  if (!isInitialized) {
+    initializeStudents()
+  }
+  return MAX_STUDENTS - studentsStore.length
+}
+
 export const db = {
   initializeStudents,
   getStudents,
@@ -197,4 +241,6 @@ export const db = {
   updateStudent,
   deleteStudent,
   getStudentByRollNumber,
+  getRemainingSlots,
+  MAX_STUDENTS,
 }
