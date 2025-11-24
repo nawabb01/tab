@@ -160,6 +160,7 @@ function saveToStorage(students: Student[]) {
   if (typeof window === "undefined") return
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(students))
+    console.log("[v0] Saved to localStorage. Total students:", students.length)
   } catch (error) {
     console.error("Error saving to localStorage:", error)
   }
@@ -170,8 +171,11 @@ export function initializeStudents() {
     const stored = loadFromStorage()
     if (stored.length > 0) {
       studentsStore = stored
+      console.log("[v0] Loaded from localStorage. Total students:", studentsStore.length)
     } else {
       studentsStore = [...DEFAULT_STUDENTS]
+      console.log("[v0] Using default students. Total students:", studentsStore.length)
+      saveToStorage(studentsStore)
     }
     isInitialized = true
   }
@@ -182,6 +186,7 @@ export function getStudents(): Student[] {
   if (!isInitialized) {
     initializeStudents()
   }
+  console.log("[v0] Getting students. Count:", studentsStore.length)
   return [...studentsStore]
 }
 
@@ -193,7 +198,11 @@ export function addStudent(student: Student): Student | null {
     console.warn(`Cannot add student. Maximum limit of ${MAX_STUDENTS} students reached.`)
     return null
   }
+  if (!student.id) {
+    student.id = Date.now().toString()
+  }
   studentsStore.push(student)
+  console.log("[v0] Student added. Total now:", studentsStore.length, "Student:", student.rollNumber)
   saveToStorage(studentsStore)
   return student
 }
@@ -203,8 +212,12 @@ export function updateStudent(rollNumber: string, updates: Partial<Student>): St
     initializeStudents()
   }
   const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
-  if (index === -1) return null
+  if (index === -1) {
+    console.warn("[v0] Student not found:", rollNumber)
+    return null
+  }
   studentsStore[index] = { ...studentsStore[index], ...updates }
+  console.log("[v0] Student updated:", rollNumber)
   saveToStorage(studentsStore)
   return studentsStore[index]
 }
@@ -214,8 +227,12 @@ export function deleteStudent(rollNumber: string): boolean {
     initializeStudents()
   }
   const index = studentsStore.findIndex((s) => s.rollNumber === rollNumber)
-  if (index === -1) return false
+  if (index === -1) {
+    console.warn("[v0] Student not found for deletion:", rollNumber)
+    return false
+  }
   studentsStore.splice(index, 1)
+  console.log("[v0] Student deleted:", rollNumber, "Total now:", studentsStore.length)
   saveToStorage(studentsStore)
   return true
 }
@@ -231,7 +248,9 @@ export function getRemainingSlots(): number {
   if (!isInitialized) {
     initializeStudents()
   }
-  return MAX_STUDENTS - studentsStore.length
+  const remaining = MAX_STUDENTS - studentsStore.length
+  console.log("[v0] Remaining slots:", remaining, "Total students:", studentsStore.length)
+  return remaining
 }
 
 export const db = {

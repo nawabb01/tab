@@ -123,6 +123,8 @@ export function AdminPanel() {
 
     try {
       setIsLoading(true)
+      console.log("[v0] Submitting student:", formData)
+
       const response = await fetch("/api/students", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,11 +134,17 @@ export function AdminPanel() {
         }),
       })
 
+      console.log("[v0] Response status:", response.status)
+
       if (!response.ok) {
         const error = await response.json()
+        console.error("[v0] Error response:", error)
         toast.error(error.message || "Failed to add student")
         return
       }
+
+      const result = await response.json()
+      console.log("[v0] Student added successfully:", result)
 
       toast.success(isEditing ? "Student updated successfully!" : "Student added successfully!")
       setFormData({
@@ -152,10 +160,14 @@ export function AdminPanel() {
       setPhotoPreview(null)
       setIsDialogOpen(false)
       setIsEditing(false)
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
       await fetchStudents()
       await fetchRemainingSlots()
+      console.log("[v0] Refreshed students and slots")
     } catch (error) {
-      console.error("Error saving student:", error)
+      console.error("[v0] Error saving student:", error)
       toast.error("Failed to save student")
     } finally {
       setIsLoading(false)
