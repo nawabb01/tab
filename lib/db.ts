@@ -114,7 +114,7 @@ const DEFAULT_STUDENTS: Student[] = [
     course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/images/1000387017.jpg",
+    photoUrl: "/images/1000375047.jpg",
   },
   {
     rollNumber: "GNI2024011",
@@ -125,7 +125,7 @@ const DEFAULT_STUDENTS: Student[] = [
     course: "ADCA",
     startDate: "2024-08-01",
     issueDate: "2025-08-10",
-    photoUrl: "/images/1000375047.jpg",
+    photoUrl: "/images/1000387017.jpg", // Updated to correct Harmanpreet photo
   },
   {
     rollNumber: "GNI2024013",
