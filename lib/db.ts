@@ -150,7 +150,7 @@ const DEFAULT_STUDENTS: Student[] = [
     course: "DCA",
     startDate: "2025-09-01",
     issueDate: "2026-01-01",
-    photoUrl: "/images/karanpreet-kaur.jpg",
+    photoUrl: "/images/karanpreet-20kaur-20image.jpeg",
   },
 ]
 
