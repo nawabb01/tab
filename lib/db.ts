@@ -141,6 +141,17 @@ const DEFAULT_STUDENTS: Student[] = [
     issueDate: "2025-11-25",
     photoUrl: "/images/img-20251122-wa0030.jpg",
   },
+  {
+    rollNumber: "GNI2024014",
+    name: "KARANPREET KAUR",
+    fatherName: "BALWINDER SINGH",
+    email: "karanpreetkaur630@gmail.com",
+    phoneNumber: "6284757243",
+    course: "DCA",
+    startDate: "2025-09-01",
+    issueDate: "2026-01-01",
+    photoUrl: "/images/karanpreet-kaur.jpg",
+  },
 ]
 
 function loadFromStorage(): Student[] {
