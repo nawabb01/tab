@@ -131,6 +131,17 @@ const DEFAULT_STUDENTS: Student[] = [
     photoUrl: "/images/harman-pic.jpg", // Updated to correct Harmanpreet photo
   },
   {
+    rollNumber: "GNI2024012",
+    name: "RAJPAL KAUR",
+    fatherName: "AMANBIR SINGH",
+    email: "rajpal48688@gmail.com",
+    phoneNumber: "9814609230",
+    course: "ADVANCED DIPLOMA COMPUTER APPLICATION",
+    startDate: "2025-06-01",
+    issueDate: "2026-07-05",
+    photoUrl: "/images/rajpal-kaur.jpg",
+  },
+  {
     rollNumber: "GNI2024013",
     name: "ASHMEET KAUR",
     fatherName: "HARJEET SINGH",
