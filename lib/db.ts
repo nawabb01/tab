@@ -4,8 +4,22 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 import type { Application, Student } from "@/types/student"
 
 const MAX_STUDENTS = 50
+const STUDENT_PHOTOS_BUCKET = "student-photos"
+const MAX_STUDENT_PHOTO_BYTES = 5 * 1024 * 1024
+const PHOTO_TYPES = new Map([
+  ["image/jpeg", (bytes: Buffer) => bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff],
+  ["image/png", (bytes: Buffer) => bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))],
+  ["image/webp", (bytes: Buffer) => bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP"],
+])
 let supabaseClient: SupabaseClient | undefined
 let applications: Application[] = []
+
+export class InvalidStudentPhotoError extends Error {
+  constructor() {
+    super("Photo must be a valid JPEG, PNG, or WebP image under 5 MB")
+    this.name = "InvalidStudentPhotoError"
+  }
+}
 
 type StudentRow = {
   roll_number: string
@@ -49,6 +63,39 @@ function fromRow(row: StudentRow): Student {
     issueDate: row.issue_date,
     ...(row.photo_url ? { photoUrl: row.photo_url } : {}),
   }
+}
+
+export async function persistStudentPhoto(student: Student): Promise<Student> {
+  const photoUrl = student.photoUrl?.trim()
+  if (!photoUrl || photoUrl.startsWith("/placeholder.svg")) {
+    return { ...student, photoUrl: undefined }
+  }
+  if (!photoUrl.startsWith("data:")) return student
+
+  const match = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/.exec(photoUrl)
+  if (!match || photoUrl.length > Math.ceil((MAX_STUDENT_PHOTO_BYTES * 4) / 3) + 64) {
+    throw new InvalidStudentPhotoError()
+  }
+
+  const [, contentType, encodedImage] = match
+  const bytes = Buffer.from(encodedImage, "base64")
+  const hasValidSignature = PHOTO_TYPES.get(contentType)?.(bytes) ?? false
+  if (!bytes.length || bytes.length > MAX_STUDENT_PHOTO_BYTES || !hasValidSignature) {
+    throw new InvalidStudentPhotoError()
+  }
+
+  const rollNumber = student.rollNumber.trim()
+  if (!/^[A-Za-z0-9_-]{1,64}$/.test(rollNumber)) throw new InvalidStudentPhotoError()
+  const path = `students/${rollNumber}`
+  const { error } = await getSupabase().storage.from(STUDENT_PHOTOS_BUCKET).upload(path, bytes, {
+    cacheControl: "31536000",
+    contentType,
+    upsert: true,
+  })
+  if (error) throw error
+
+  const { data } = getSupabase().storage.from(STUDENT_PHOTOS_BUCKET).getPublicUrl(path)
+  return { ...student, photoUrl: data.publicUrl }
 }
 
 function toRow(student: Student) {
