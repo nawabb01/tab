@@ -21,14 +21,11 @@ export function CertificateVerification() {
     setError("")
     setStudent(null)
 
-    console.log("Submitting roll number:", rollNumber)
 
     try {
       const response = await fetch(`/api/verify?rollNumber=${encodeURIComponent(rollNumber.trim())}`)
-      console.log("Response status:", response.status)
 
       const data = await response.json()
-      console.log("Response data:", data)
 
       if (!response.ok) {
         setError(data.error || "Failed to verify certificate")
@@ -105,11 +102,11 @@ export function CertificateVerification() {
                     <dd className="text-base">{student.fatherName}</dd>
                   </div>
                   <div className="space-y-1 md:col-span-2">
-                    <dt className="text-sm font-medium text-gray-500">Email</dt>
+                    <dt className="text-sm font-medium text-gray-500">Email (masked)</dt>
                     <dd className="text-base break-all">{student.email}</dd>
                   </div>
                   <div className="space-y-1">
-                    <dt className="text-sm font-medium text-gray-500">Phone Number</dt>
+                    <dt className="text-sm font-medium text-gray-500">Phone Number (masked)</dt>
                     <dd className="text-base">{student.phoneNumber}</dd>
                   </div>
                   <div className="space-y-1">
