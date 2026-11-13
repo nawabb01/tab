@@ -63,13 +63,21 @@ export function AdminPanel() {
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"]
+    if (!allowedTypes.includes(file.type) || file.size > 5 * 1024 * 1024) {
+      toast.error("Choose a JPEG, PNG, or WebP photo under 5 MB")
+      e.target.value = ""
+      return
     }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === "string") setPhotoPreview(reader.result)
+    }
+    reader.onerror = () => toast.error("Could not read this photo")
+    reader.readAsDataURL(file)
   }
 
   const fetchStudents = async () => {
@@ -135,7 +143,7 @@ export function AdminPanel() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formData,
-            photoUrl: photoPreview || "/placeholder.svg",
+            photoUrl: photoPreview || undefined,
           }),
         },
       )
@@ -500,9 +508,15 @@ export function AdminPanel() {
 
             {/* Photo Upload */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Student Photo</label>
+              <label htmlFor="student-photo" className="block text-sm font-medium">Student Photo</label>
               <div className="flex items-center gap-4">
-                <Input type="file" accept="image/*" onChange={handlePhotoUpload} className="flex-1" />
+                <Input
+                  id="student-photo"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handlePhotoUpload}
+                  className="flex-1"
+                />
                 {photoPreview && (
                   <div className="w-24 h-24 rounded border">
                     <img
