@@ -110,13 +110,14 @@ export function AdminPanel() {
     }))
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     if (!formData.name || !formData.rollNumber || !formData.course) {
       toast.error("Please fill in all required fields")
       return
     }
 
-    if (remainingSlots <= 0) {
+    if (!isEditing && remainingSlots <= 0) {
       toast.error("Maximum 50 students limit reached!")
       return
     }
@@ -125,14 +126,19 @@ export function AdminPanel() {
       setIsLoading(true)
       console.log("[v0] Submitting student:", formData)
 
-      const response = await fetch("/api/students", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          photoUrl: photoPreview || "/placeholder.svg",
-        }),
-      })
+      const response = await fetch(
+        isEditing && selectedStudent
+          ? `/api/students/${encodeURIComponent(selectedStudent.rollNumber)}`
+          : "/api/students",
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...formData,
+            photoUrl: photoPreview || "/placeholder.svg",
+          }),
+        },
+      )
 
       console.log("[v0] Response status:", response.status)
 

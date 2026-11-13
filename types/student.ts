@@ -1,4 +1,5 @@
 export interface Student {
+  id?: string
   rollNumber: string
   name: string
   fatherName: string
@@ -11,8 +12,10 @@ export interface Student {
 }
 
 export interface Application {
+  id?: string
   name: string
   email: string
-  phone: string
+  phone?: string
+  phoneNumber?: string
   course: string
 }
